@@ -1,0 +1,121 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Constructors
+      id: constructors
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Constructors
+        setup-command: ''
+        command: mvn -Dtest=#testDefaultConstructorExists,#testDiscountConstructorExists
+          test
+        timeout: 10
+        max-score: 10
+    - name: Borrow Methods
+      id: borrow-methods
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Borrow Methods
+        setup-command: ''
+        command: mvn -Dtest=#testBorrowMethodSingleExists test
+        timeout: 10
+        max-score: 10
+    - name: Borrow with extra days
+      id: borrow-with-extra-days
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Borrow with extra days
+        setup-command: ''
+        command: mvn -Dtest=#testBorrowMethodExtraDaysExists test
+        timeout: 10
+        max-score: 10
+    - name: Borrow multiple items
+      id: borrow-multiple-items
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Borrow multiple items
+        setup-command: ''
+        command: mvn -Dtest=#testBorrowMethodMultipleItemsExists test
+        timeout: 10
+        max-score: 10
+    - name: Multiple Item with extra days
+      id: multiple-item-with-extra-days
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Multiple Item with extra days
+        setup-command: ''
+        command: mvn -Dtest=#testBorrowMethodMultipleItemsExtraDaysExists test
+        timeout: 10
+        max-score: 10
+    - name: Borrow a book
+      id: borrow-a-book
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Borrow a book
+        setup-command: ''
+        command: mvn -Dtest=#testBorrowSingleBook test
+        timeout: 10
+        max-score: 10
+    - name: Borrow a book with extra days
+      id: borrow-a-book-with-extra-days
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Borrow a book with extra days
+        setup-command: ''
+        command: mvn -Dtest=#testBorrowBookWithExtraDays test
+        timeout: 10
+        max-score: 10
+    - name: Multiple items
+      id: multiple-items
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Multiple items
+        setup-command: ''
+        command: mvn -Dtest=#testBorrowMultipleItems test
+        timeout: 10
+        max-score: 10
+    - name: Borrow Multiple Items ExtraDays
+      id: borrow-multiple-items-extradays
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Borrow Multiple Items ExtraDays
+        setup-command: ''
+        command: mvn -Dtest=#testBorrowMultipleItemsExtraDays test
+        timeout: 10
+        max-score: 10
+    - name: Discount Constructor
+      id: discount-constructor
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Discount Constructor
+        setup-command: ''
+        command: mvn -Dtest=#testDiscountConstructor test
+        timeout: 10
+        max-score: 10
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        CONSTRUCTORS_RESULTS: "${{steps.constructors.outputs.result}}"
+        BORROW-METHODS_RESULTS: "${{steps.borrow-methods.outputs.result}}"
+        BORROW-WITH-EXTRA-DAYS_RESULTS: "${{steps.borrow-with-extra-days.outputs.result}}"
+        BORROW-MULTIPLE-ITEMS_RESULTS: "${{steps.borrow-multiple-items.outputs.result}}"
+        MULTIPLE-ITEM-WITH-EXTRA-DAYS_RESULTS: "${{steps.multiple-item-with-extra-days.outputs.result}}"
+        BORROW-A-BOOK_RESULTS: "${{steps.borrow-a-book.outputs.result}}"
+        BORROW-A-BOOK-WITH-EXTRA-DAYS_RESULTS: "${{steps.borrow-a-book-with-extra-days.outputs.result}}"
+        MULTIPLE-ITEMS_RESULTS: "${{steps.multiple-items.outputs.result}}"
+        BORROW-MULTIPLE-ITEMS-EXTRADAYS_RESULTS: "${{steps.borrow-multiple-items-extradays.outputs.result}}"
+        DISCOUNT-CONSTRUCTOR_RESULTS: "${{steps.discount-constructor.outputs.result}}"
+      with:
+        runners: constructors,borrow-methods,borrow-with-extra-days,borrow-multiple-items,multiple-item-with-extra-days,borrow-a-book,borrow-a-book-with-extra-days,multiple-items,borrow-multiple-items-extradays,discount-constructor
